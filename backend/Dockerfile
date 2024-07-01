@@ -1,27 +1,21 @@
 # Use an official Node.js runtime as a parent image
-FROM node:14
+FROM node:18.19.0-alpine
 
 # Set the working directory
 WORKDIR /app
 
 # Copy package.json and package-lock.json
-COPY frontend/package*.json ./
+COPY backend/package*.json ./
 
 # Install dependencies
 RUN npm install
 
-# Copy the frontend source code
-COPY frontend/ .
+# Copy the backend source code
+COPY backend/ .
 
-# Build the frontend application
-RUN npm run build
+# Expose the port the backend runs on
+EXPOSE 5000
 
-# Use an Nginx image to serve the built frontend
-FROM nginx:alpine
-COPY --from=0 /app/build /usr/share/nginx/html
+# Start the backend application
+CMD ["npm", "start"]
 
-# Expose the port the frontend runs on
-EXPOSE 80
-
-# Start Nginx
-CMD ["nginx", "-g", "daemon off;"]
